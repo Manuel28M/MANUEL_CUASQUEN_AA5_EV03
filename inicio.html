@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio de Sesión</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        .success {
+            color: #4caf50;
+        }
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Inicio de Sesión</h2>
+        <p class="success">¡Inicio de sesión exitoso!</p>
+        <p><a href="index.html">Volver al inicio de sesión</a></p>
+    </div>
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <script>
+        // JavaScript para el efecto de confeti
+        function randomInRange(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        function createConfettiParticle() {
+            var colors = ["#f44336", "#2196F3", "#FFEB3B", "#4CAF50", "#FF9800"];
+            var canvas = document.getElementById("confetti-canvas");
+            var ctx = canvas.getContext("2d");
+            var width = canvas.width = window.innerWidth;
+            var height = canvas.height = window.innerHeight;
+
+            function confettiParticle(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.radius = randomInRange(5, 10);
+                this.velocityX = randomInRange(-5, 5);
+                this.velocityY = randomInRange(1, 10);
+            }
+
+            confettiParticle.prototype.draw = function() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+
+            confettiParticle.prototype.update = function() {
+                this.x += this.velocityX;
+                this.y += this.velocityY;
+
+                if (this.y + this.radius > height) {
+                    this.radius = 0;
+                }
+            }
+
+            var confettiParticles = [];
+
+            for (var i = 0; i < 100; i++) {
+                var randomX = randomInRange(0, width);
+                var randomY = randomInRange(-height, 0);
+                var randomColor = colors[Math.floor(Math.random() * colors.length)];
+                confettiParticles.push(new confettiParticle(randomX, randomY, randomColor));
+            }
+
+            function drawConfetti() {
+                ctx.clearRect(0, 0, width, height);
+
+                for (var i = 0; i < confettiParticles.length; i++) {
+                    confettiParticles[i].draw();
+                    confettiParticles[i].update();
+                }
+
+                requestAnimationFrame(drawConfetti);
+            }
+
+            drawConfetti();
+        }
+
+        createConfettiParticle();
+    </script>
+</body>
+</html>
